@@ -1,0 +1,530 @@
+*	Unidade de Processamento - Metodo SoP-PoS
+
+.include p35_cmos_models_ff.inc
+.include p35_model_card.inc
+.include Library_Cells_v2i.pm
+.include program_memory_6.pm
+
+.options gmin=1e-10
+.options abstol=1e-10
+.options reltol=0.001
+
+V1_sup vdd1 0 3.3
+V1_gnd vss 0 0.0
+
+Vrst seq_act    0 pwl (0 0 5.02n 0 5.03n 3.3)
+V1_clk clk  0 pulse (0 3.3 0 0.01n 0.01n 0.5n 1n)
+
+*****************************************************
+* 				Memória de Programa 	            *                           
+*****************************************************
+
+Xcs1  e3  e2  e1  e0  seq_act vss vss vss vss p0 vdd1 vss CONTADOR_SINC
+X_memoria e3 e2 e1 e0 d23 d22 d21 d20 d19 d18 d17 d16 d15 d14 d13 d12 d11 d10 d9 d8 d7 d6 d5 d4 d3 d2 d1 d0 MEMORIA_PROGRAMA
+
+*****************************************************
+* 	 		Multiplexação de Tensões                *		 	             
+*****************************************************
+
+V_p      vp   	  0    2.4
+V_reset  v_reset  0    3.3
+V_set    v_set    0    1.6
+V_read   v_read   0    1.0
+
+Vn0 Vn_0 0  1.6
+Vn1 Vn_1 0  0.0
+Vn2 Vn_2 0  0.3
+Vn3 Vn_3 0  0.46
+Vn4 Vn_4 0  0.56
+Vn5 Vn_5 0  0.63
+Vn6 Vn_6 0  0.68
+Vn7 Vn_7 0  0.8
+
+X_mux_Vn Vn_0 vn_1 vn_2 vn_3 vn_4 vn_5 vn_6 vn_7 d18 d17 d16 vn ANALOG_MUX_8X1
+X_mux_Vout vss v_reset v_read v_read d23 d22 v_out ANALOG_MUX_4X1 
+
+X_mux_c1 vp vn hz v_out d1  d0  c0b  ANALOG_MUX_4X1
+X_mux_c2 vp vn hz v_out d3  d2  c1b  ANALOG_MUX_4X1
+X_mux_c3 vp vn hz v_out d5  d4  c2b  ANALOG_MUX_4X1
+X_mux_c4 vp vn hz v_out d7  d6  c3b  ANALOG_MUX_4X1
+X_mux_c5 vp vn hz v_out d9  d8  c4b  ANALOG_MUX_4X1
+X_mux_c6 vp vn hz v_out d11 d10 c5b  ANALOG_MUX_4X1
+X_mux_c7 vp vn hz v_out d13 d12 c6b  ANALOG_MUX_4X1
+X_mux_c8 vp vn hz v_out d15 d14 c7b  ANALOG_MUX_4X1
+
+X_buf_c0 c0b vdd1 vss c0 ANALOG_BUF
+X_buf_c1 c1b vdd1 vss c1 ANALOG_BUF
+X_buf_c2 c2b vdd1 vss c2 ANALOG_BUF
+X_buf_c3 c3b vdd1 vss c3 ANALOG_BUF
+X_buf_c4 c4b vdd1 vss c4 ANALOG_BUF
+X_buf_c5 c5b vdd1 vss c5 ANALOG_BUF
+X_buf_c6 c6b vdd1 vss c6 ANALOG_BUF
+X_buf_c7 c7b vdd1 vss c7 ANALOG_BUF
+
+V_nc hz 0 1.0
+
+*****************************************************
+* 		       Células Memresistivas                *
+*****************************************************					 	                 
+
+Xc00  c0 i00  memristor_0 
+Vs00  i00 tm00 0
+Mn00  tm00 act_00 g vss NMOS350 w=1.2u l=350n
+
+Xc01  c1 i01  memristor_0 
+Vs01  i01 tm01 0              
+Mn01  tm01 act_01 g vss NMOS350 w=1.2u l=350n
+
+Xc02  c2 i02  memristor_1
+Vs02  i02 tm02 0        
+Mn02  tm02 act_02 g vss NMOS350 w=1.2u l=350n
+
+Xc03 c3 i03  memristor_0
+Vs03  i03 tm03 0
+Mn03  tm03 act_03 g vss NMOS350 w=1.2u l=350n
+
+Xc04 c4 i04  memristor_1
+Vs04  i04 tm04 0            
+Mn04  tm04 act_04 g vss NMOS350 w=1.2u l=350n
+
+Xc05  c5  i05  memristor_0
+Vs05  i05 tm05 0            
+Mn05  tm05 act_05 g vss NMOS350 w=1.2u l=350n
+
+Xc06  c6  i06  memristor_0
+Vs06  i06 tm06 0            
+Mn06  tm06 act_06 g vss NMOS350 w=1.2u l=350n
+
+Xc07  c7  i07  memristor_0
+Vs07  i07 tm07 0            
+Mn07  tm07 act_07 g vss NMOS350 w=1.5u l=350n
+
+Xc10  c0 i10  memristor_0 
+Vs10  i10 tm10 0
+Mn10  tm10 act_10 g2 vss NMOS350 w=1.2u l=350n
+
+Xc11  c1 i11  memristor_0 
+Vs11  i11 tm11 0
+Mn11  tm11 act_11 g2 vss NMOS350 w=1.2u l=350n
+
+Xc12  c2 i12  memristor_0 
+Vs12  i12 tm12 0
+Mn12  tm12 act_12 g2 vss NMOS350 w=1.2u l=350n
+
+Xc13  c3 i13  memristor_0 
+Vs13  i13 tm13 0
+Mn13  tm13 act_13 g2 vss NMOS350 w=1.2u l=350n
+
+Xc14  c4 i14  memristor_0 
+Vs14  i14 tm14 0
+Mn14  tm14 act_14 g2 vss NMOS350 w=1.2u l=350n
+
+Xc15  c5 i15  memristor_0 
+Vs15  i15 tm15 0
+Mn15  tm15 act_15 g2 vss NMOS350 w=1.2u l=350n
+
+Xc16  c6 i16  memristor_0 
+Vs16  i16 tm16 0
+Mn16  tm16 act_16 g2 vss NMOS350 w=1.2u l=350n
+
+Xc17  c7 i17  memristor_0 
+Vs17  i17 tm17 0
+Mn17  tm17 act_17 g2 vss NMOS350 w=1.2u l=350n
+
+Xc20  c0 i20  memristor_0 
+Vs20  i20 tm20 0
+Mn20  tm20 act_20 g3 vss NMOS350 w=1.2u l=350n
+
+Xc21  c1 i21  memristor_0 
+Vs21  i21 tm21 0
+Mn21  tm21 act_21 g3 vss NMOS350 w=1.2u l=350n
+
+Xc22  c2 i22  memristor_0 
+Vs22  i22 tm22 0
+Mn22  tm22 act_22 g3 vss NMOS350 w=1.2u l=350n
+
+Xc23  c3 i23  memristor_0 
+Vs23  i23 tm23 0
+Mn23  tm23 act_23 g3 vss NMOS350 w=1.2u l=350n
+
+Xc24  c4 i24  memristor_0 
+Vs24  i24 tm24 0
+Mn24  tm24 act_24 g3 vss NMOS350 w=1.2u l=350n
+
+Xc25  c5 i25  memristor_0 
+Vs25  i25 tm25 0
+Mn25  tm25 act_25 g3 vss NMOS350 w=1.2u l=350n
+
+Xc26  c6 i26  memristor_0 
+Vs26  i26 tm26 0
+Mn26  tm26 act_26 g3 vss NMOS350 w=1.2u l=350n
+
+Xc27  c7 i27  memristor_0 
+Vs27  i27 tm27 0
+Mn27  tm27 act_27 g3 vss NMOS350 w=1.2u l=350n
+
+Xc30  c0 i30  memristor_0 
+Vs30  i30 tm30 0
+Mn30  tm30 act_30 g4 vss NMOS350 w=1.2u l=350n
+
+Xc31  c1 i31  memristor_0 
+Vs31  i31 tm31 0
+Mn31  tm31 act_31 g4 vss NMOS350 w=1.2u l=350n
+
+Xc32  c2 i32  memristor_0 
+Vs32  i32 tm32 0
+Mn32  tm32 act_32 g4 vss NMOS350 w=1.2u l=350n
+
+Xc33  c3 i33  memristor_0 
+Vs33  i33 tm33 0
+Mn33  tm33 act_33 g4 vss NMOS350 w=1.2u l=350n
+
+Xc34  c4 i34  memristor_0 
+Vs34  i34 tm34 0
+Mn34  tm34 act_34 g4 vss NMOS350 w=1.2u l=350n
+
+Xc35  c5 i35  memristor_0 
+Vs35  i35 tm35 0
+Mn35  tm35 act_35 g4 vss NMOS350 w=1.2u l=350n
+
+Xc36  c6 i36  memristor_0 
+Vs36  i36 tm36 0
+Mn36  tm36 act_36 g4 vss NMOS350 w=1.2u l=350n
+
+Xc37  c7 i37  memristor_0 
+Vs37  i37 tm37 0
+Mn37  tm37 act_37 g4 vss NMOS350 w=1.2u l=350n
+
+Bamp   nd1 vss v = {v(line)}
+Xb_line line vdd1 vss nd1 ANALOG_BUF
+Xtg0   nd1	d23  d23n  vdd1  vss  nd2 tgate2
+Ramp1  nd2 vss 100k
+Xamp   nd2 nd3 vdd1 0 out OPAMP
+Ramp2  nd3 0 10k
+Ramp3  nd3 out 60k
+X_ffd0 out seq_act clk_out vdd1 vss data_out data_outN  FF_D
+
+X_mux_vline v_set vss d22 out_vline ANALOG_MUX_2X1
+Mn_vline  out_vline ctrl_sw line vss NMOS350 w=3u l=350n
+Xa1 d23n p2  vdd1 vss ctrl_sw  AND2
+Rg  line ndg 10k
+Mng ndg ctrl_div vss vss NMOS350 w=560n l=350n
+Xo1 p2n  d23 vdd1 vss ctrl_div OR2
+Xn0 d23 vdd1 vss d23n NOT2
+
+X_mux_lines g g2 g3 g4 d21 d20 line  ANALOG_MUX_4X1
+
+*****************************************************
+* 		    Monitoração de Efetividade              *
+*****************************************************	 	                       
+
+Vref0 ref0 0  0.56
+Vref1 ref1 0  1.0
+Vref2 ref2 0  0.0
+Vref3 ref3 0  0.3
+Vref4 ref4 0  0.46
+Vref5 ref5 0  0.56
+Vref6 ref6 0  0.63
+Vref7 ref7 0  0.68
+Vref14 ref_set 0 1.4
+
+X_mux_comp ref0 ref1 ref2 ref3 ref4 ref5 ref6 ref7 d18 d17 d16 ref ANALOG_MUX_8X1
+
+X_subt line ref vdd1 vss smp3 AMP_SUB
+X_vc1 ref  line       vdd1 vss vco1  VCOMP
+X_vc2 line     ref    vdd1 vss vco2  VCOMP
+X_vc3 smp3  ref_set vdd1 vss vco3  VCOMP
+Xo1_smp d18 d17 vdd1 vss sel_smp   OR2
+X_mux_smp vco1 vco2 vco3 vco3 sel_smp d16 vdd1 vss smp_mux MUX4X1 
+X_ffd_smp smp_mux rst_sm p1 vdd1 vss efet_out_x efet_outn FF_D
+X_buf_smp efet_out_x vdd1 vss efet_out ANALOG_BUF
+
+
+*****************************************************
+* 		       Contador de Fases                    *
+*****************************************************
+
+X_FFD1 p2n rst_sm  clk_sm vdd1 vss p0x p0n  FF_D
+X_FFD2 p0  rst_sm  clk_sm vdd1 vss p1x p1n  FF_D
+X_FFD3 p1  rst_sm  clk_sm vdd1 vss p2x p2nx FF_D
+X_buf_p0  p0x  vdd1 vss p0   ANALOG_BUF
+X_buf_p1  p1x  vdd1 vss p1   ANALOG_BUF
+X_buf_p2  p2x  vdd1 vss p2   ANALOG_BUF
+X_buf_p2n p2nx vdd1 vss p2n  ANALOG_BUF
+
+Xa1_cf  p2n clk vdd1 vss clk_sm_x AND2
+X_buf_clk_sm clk_sm_x vdd1 vss clk_sm  ANALOG_BUF
+Xa3_cf  p0 p2n vdd1 vss p2n_p0x  AND2  ; state machine
+X_buf_p2n_p0 p2n_p0x vdd1 vss p2n_p0  ANALOG_BUF
+
+*************************************************************
+*		  Temporização e Conclusão Adaptativa (TCA)         *
+*************************************************************   
+
+Xc2 Q6 Q5 Q4 Q3  Q2  Q1  Q0  clk rst_sm vdd1 vss CONTADOR_7b
+Xm1_tca  p2 Q6 efet_out vdd1 vss t_smp MUX2x1     ; M1 (TCA)
+Xm2_tca  t_smp  Q2Q0 d23 vdd1 vss status_x MUX2x1  ; M2 (TCA)
+Xg1_tca  exec_done_N status_N seq_act vdd1 vss rst_sm_x    AND3
+Xg2_tca   Q2 Q0 vdd1 vss Q2Q0 AND2
+Xg3_tca  d23 Q2 vdd1 vss clk_out  AND2
+Xn_stat   status vdd1 vss status_N  NOT2
+X_buf_stat  status_x  vdd1 vss status   ANALOG_BUF
+X_buf_rst_sm  rst_sm_x  vdd1 vss rst_sm   ANALOG_BUF
+
+X1_se e3 vdd1  vdd1 vss  qc3  XNOR2  ;se - sequence end
+X2_se e2 vss   vdd1 vss  qc2  XNOR2  ;se - sequence end
+X3_se e1 vss   vdd1 vss  qc1  XNOR2  ;se - sequence end
+X4_se e0 vdd1  vdd1 vss  qc0  XNOR2  ;se - sequence end
+
+X5_se qc3 qc2 vdd1 vss n1_se AND2
+X6_se qc1 qc0 vdd1 vss n2_se AND2
+X7_se n1_se n2_se vdd1 vss seq_end AND2
+
+X1_end efet_out d19 vdd1 vss ed1 AND2 ; ed - execution done
+X2_end seq_end ed1 vdd1 vss ed2 OR2
+X3_end ed2 status vdd1 vss done_trig AND2
+X_ffd_done  vdd1 seq_act done_trig vdd1 vss exec_done exec_done_N  FF_D 
+   
+Xn1 d1  vdd1 vss d1n  NOT2
+Xn2 d3  vdd1 vss d3n  NOT2
+Xn3 d5  vdd1 vss d5n  NOT2
+Xn4 d7  vdd1 vss d7n  NOT2
+Xn5 d9  vdd1 vss d9n  NOT2
+Xn6 d11 vdd1 vss d11n NOT2
+Xn7 d13 vdd1 vss d13n NOT2
+Xn8 d15 vdd1 vss d15n NOT2
+
+Xa_iw1  d1  d0   vdd1 vss d1d0    AND2  ; instruction word
+Xa_iw2  d3  d2   vdd1 vss d3d2    AND2  ; instruction word
+Xa_iw3  d5  d4   vdd1 vss d5d4    AND2  ; instruction word
+Xa_iw4  d7  d6   vdd1 vss d7d6    AND2  ; instruction word
+Xa_iw5  d9  d8   vdd1 vss d9d8    AND2  ; instruction word
+Xa_iw6  d11 d10  vdd1 vss d11d10  AND2  ; instruction word
+Xa_iw7  d13 d12  vdd1 vss d13d12  AND2  ; instruction word
+Xa_iw8  d15 d14  vdd1 vss d15d14  AND2  ; instruction word
+
+*************************************************************
+*		       Seleção de Memristores				        *
+*************************************************************  
+
+Xa_smp  p2 efet_out vdd1 vss en_out_x AND2
+Xb_en_out  en_out_x  vdd1 vss en_out   ANALOG_BUF
+
+Xa1_sel00 d1n      p2n_p0  vdd1 vss n00a     AND2
+Xa2_sel00 d1d0     en_out  vdd1 vss n00b     AND2
+Xo1_sel00 n00a     n00b    vdd1 vss act_00x  OR2
+Xa3_sel00 act_00x  L0      vdd1 vss act_00   AND2
+		   
+Xa1_sel01 d3n      p2n_p0  vdd1 vss n01a     AND2
+Xa2_sel01 d3d2     en_out  vdd1 vss n01b     AND2
+Xo1_sel01 n01a     n01b    vdd1 vss act_01x  OR2
+Xa3_sel01 act_01x  L0      vdd1 vss act_01   AND2
+
+Xa1_sel02 d5n  	   p2n_p0  vdd1 vss n02a   	 AND2
+Xa2_sel02 d5d4     en_out  vdd1 vss n02b     AND2
+Xo1_sel02 n02a     n02b    vdd1 vss act_02x  OR2
+Xa3_sel02 act_02x  L0      vdd1 vss act_02   AND2
+
+Xa1_sel03 d7n      p2n_p0  vdd1 vss n03a     AND2
+Xa2_sel03 d7d6     en_out  vdd1 vss n03b     AND2
+Xo1_sel03 n03a     n03b    vdd1 vss act_03x  OR2
+Xa3_sel03 act_03x  L0      vdd1 vss act_03   AND2
+
+Xa1_sel04 d9n      p2n_p0  vdd1 vss n04a     AND2
+Xa2_sel04 d9d8     en_out  vdd1 vss n04b     AND2
+Xo1_sel04 n04a     n04b    vdd1 vss act_04x  OR2
+Xa3_sel04 act_04x  L0      vdd1 vss act_04   AND2
+
+Xa1_sel05 d11n     p2n_p0  vdd1 vss n05a     AND2
+Xa2_sel05 d11d10   en_out  vdd1 vss n05b     AND2
+Xo1_sel05 n05a     n05b    vdd1 vss act_05x  OR2
+Xa3_sel05 act_05x  L0      vdd1 vss act_05   AND2
+
+Xa1_sel06 d13n     p2n_p0  vdd1 vss n06a     AND2
+Xa2_sel06 d13d12   en_out  vdd1 vss n06b     AND2
+Xo1_sel06 n06a     n06b    vdd1 vss act_06x  OR2
+Xa3_sel06 act_06x  L0      vdd1 vss act_06   AND2
+
+Xa1_sel07 d15n     p2n_p0  vdd1 vss n07a     AND2
+Xa2_sel07 d15d14   en_out  vdd1 vss n07b     AND2
+Xo1_sel07 n07a     n07b    vdd1 vss act_07x  OR2
+Xa3_sel07 act_07x  L0      vdd1 vss act_07   AND2
+
+Xa1_sel10 d1n      p2n_p0  vdd1 vss n10a     AND2
+Xa2_sel10 d1d0     en_out  vdd1 vss n10b     AND2
+Xo1_sel10 n10a     n10b    vdd1 vss act_10x  OR2
+Xa3_sel10 act_10x  L1      vdd1 vss act_10   AND2
+
+Xa1_sel11 d3n      p2n_p0  vdd1 vss n11a     AND2
+Xa2_sel11 d3d2     en_out  vdd1 vss n11b     AND2
+Xo1_sel11 n11a     n11b    vdd1 vss act_11x  OR2
+Xa3_sel11 act_11x  L1      vdd1 vss act_11   AND2
+
+Xa1_sel12 d5n  	   p2n_p0  vdd1 vss n12a   	 AND2
+Xa2_sel12 d5d4     en_out  vdd1 vss n12b     AND2
+Xo1_sel12 n12a     n12b    vdd1 vss act_12x  OR2
+Xa3_sel12 act_12x  L1      vdd1 vss act_12   AND2
+
+Xa1_sel13 d7n      p2n_p0  vdd1 vss n13a     AND2
+Xa2_sel13 d7d6     en_out  vdd1 vss n13b     AND2
+Xo1_sel13 n13a     n13b    vdd1 vss act_13x  OR2
+Xa3_sel13 act_13x  L1      vdd1 vss act_13   AND2
+
+Xa1_sel14 d9n      p2n_p0  vdd1 vss n14a     AND2
+Xa2_sel14 d9d8     en_out  vdd1 vss n14b     AND2
+Xo1_sel14 n14a     n14b    vdd1 vss act_14x  OR2
+Xa3_sel14 act_14x  L1      vdd1 vss act_14   AND2
+
+Xa1_sel15 d11n     p2n_p0  vdd1 vss n15a     AND2
+Xa2_sel15 d11d10   en_out  vdd1 vss n15b     AND2
+Xo1_sel15 n15a     n15b    vdd1 vss act_15x  OR2
+Xa3_sel15 act_15x  L1      vdd1 vss act_15   AND2
+
+Xa1_sel16 d13n     p2n_p0  vdd1 vss n16a     AND2
+Xa2_sel16 d13d12   en_out  vdd1 vss n16b     AND2
+Xo1_sel16 n16a     n16b    vdd1 vss act_16x  OR2
+Xa3_sel16 act_16x  L1      vdd1 vss act_16   AND2
+
+Xa1_sel17 d15n     p2n_p0  vdd1 vss n17a     AND2
+Xa2_sel17 d15d14   en_out  vdd1 vss n17b     AND2
+Xo1_sel17 n17a     n17b    vdd1 vss act_17x  OR2
+Xa3_sel17 act_17x  L1      vdd1 vss act_17   AND2
+
+Xa1_sel20 d1n      p2n_p0  vdd1 vss n20a     AND2
+Xa2_sel20 d1d0     en_out  vdd1 vss n20b     AND2
+Xo1_sel20 n20a     n20b    vdd1 vss act_20x  OR2
+Xa3_sel20 act_20x  L2      vdd1 vss act_20   AND2
+
+Xa1_sel21 d3n      p2n_p0  vdd1 vss n21a     AND2
+Xa2_sel21 d3d2     en_out  vdd1 vss n21b     AND2
+Xo1_sel21 n21a     n21b    vdd1 vss act_21x  OR2
+Xa3_sel21 act_21x  L2      vdd1 vss act_21   AND2
+
+Xa1_sel22 d5n  	   p2n_p0  vdd1 vss n22a   	 AND2
+Xa2_sel22 d5d4     en_out  vdd1 vss n22b     AND2
+Xo1_sel22 n22a     n22b    vdd1 vss act_22x  OR2
+Xa3_sel22 act_22x  L2      vdd1 vss act_22   AND2
+
+Xa1_sel23 d7n      p2n_p0  vdd1 vss n23a     AND2
+Xa2_sel23 d7d6     en_out  vdd1 vss n23b     AND2
+Xo1_sel23 n23a     n23b    vdd1 vss act_23x  OR2
+Xa3_sel23 act_23x  L2      vdd1 vss act_23   AND2
+
+Xa1_sel24 d9n      p2n_p0  vdd1 vss n24a     AND2
+Xa2_sel24 d9d8     en_out  vdd1 vss n24b     AND2
+Xo1_sel24 n24a     n24b    vdd1 vss act_24x  OR2
+Xa3_sel24 act_24x  L2      vdd1 vss act_24   AND2
+
+Xa1_sel25 d11n     p2n_p0  vdd1 vss n25a     AND2
+Xa2_sel25 d11d10   en_out  vdd1 vss n25b     AND2
+Xo1_sel25 n25a     n25b    vdd1 vss act_25x  OR2
+Xa3_sel25 act_25x  L2      vdd1 vss act_25   AND2
+
+Xa1_sel26 d13n     p2n_p0  vdd1 vss n26a     AND2
+Xa2_sel26 d13d12   en_out  vdd1 vss n26b     AND2
+Xo1_sel26 n26a     n26b    vdd1 vss act_26x  OR2
+Xa3_sel26 act_26x  L2      vdd1 vss act_26   AND2
+
+Xa1_sel27 d15n     p2n_p0  vdd1 vss n27a     AND2
+Xa2_sel27 d15d14   en_out  vdd1 vss n27b     AND2
+Xo1_sel27 n27a     n27b    vdd1 vss act_27x  OR2
+Xa3_sel27 act_27x  L2      vdd1 vss act_27   AND2
+
+Xa1_sel30 d1n      p2n_p0  vdd1 vss n30a     AND2
+Xa2_sel30 d1d0     en_out  vdd1 vss n30b     AND2
+Xo1_sel30 n30a     n30b    vdd1 vss act_30x  OR2
+Xa3_sel30 act_30x  L3      vdd1 vss act_30   AND2
+
+Xa1_sel31 d3n      p2n_p0  vdd1 vss n31a     AND2
+Xa2_sel31 d3d2     en_out  vdd1 vss n31b     AND2
+Xo1_sel31 n31a     n31b    vdd1 vss act_31x  OR2
+Xa3_sel31 act_31x  L3      vdd1 vss act_31   AND2
+
+Xa1_sel32 d5n  	   p2n_p0  vdd1 vss n32a   	 AND2
+Xa2_sel32 d5d4     en_out  vdd1 vss n32b     AND2
+Xo1_sel32 n32a     n32b    vdd1 vss act_32x  OR2
+Xa3_sel32 act_32x  L3      vdd1 vss act_32   AND2
+
+Xa1_sel33 d7n      p2n_p0  vdd1 vss n33a     AND2
+Xa2_sel33 d7d6     en_out  vdd1 vss n33b     AND2
+Xo1_sel33 n33a     n33b    vdd1 vss act_33x  OR2
+Xa3_sel33 act_33x  L3      vdd1 vss act_33   AND2
+
+Xa1_sel34 d9n      p2n_p0  vdd1 vss n34a     AND2
+Xa2_sel34 d9d8     en_out  vdd1 vss n34b     AND2
+Xo1_sel34 n34a     n34b    vdd1 vss act_34x  OR2
+Xa3_sel34 act_34x  L3      vdd1 vss act_34   AND2
+
+Xa1_sel35 d11n     p2n_p0  vdd1 vss n35a     AND2
+Xa2_sel35 d11d10   en_out  vdd1 vss n35b     AND2
+Xo1_sel35 n35a     n35b    vdd1 vss act_35x  OR2
+Xa3_sel35 act_35x  L3      vdd1 vss act_35   AND2
+
+Xa1_sel36 d13n     p2n_p0  vdd1 vss n36a     AND2
+Xa2_sel36 d13d12   en_out  vdd1 vss n36b     AND2
+Xo1_sel36 n36a     n36b    vdd1 vss act_36x  OR2
+Xa3_sel36 act_36x  L3      vdd1 vss act_36   AND2
+
+Xa1_sel37 d15n     p2n_p0  vdd1 vss n37a     AND2
+Xa2_sel37 d15d14   en_out  vdd1 vss n37b     AND2
+Xo1_sel37 n37a     n37b    vdd1 vss act_37x  OR2
+Xa3_sel37 act_37x  L3      vdd1 vss act_37   AND2
+
+Xdec1  d21 d20 vdd1 vss L0 L1 L2 L3 decod_2_to_4
+
+.subckt memristor_1 tr ts PARAMS: Ron=10k Roff=1MEG Rinit=10k Von=1.4 Voff=-2.4 alfa1=3.7e6 alfa2=3 alfa3=1.4e-4 beta1=7.5e8 beta2=2 beta3=4e-6 gm_ab=2e17 gm_gd=2e15 Kp=0.5 
+
+Cj j 0 1 IC={Rinit >= Roff ? 1 : 0 }
+Bj 0 j I='((Vm()< Voff) && (V(j) < 1)) ? {f1()} : ((((Vm() > Von) && (V(j) > 0)) ? {f2()} : 0))'
+Cx x 0 1 IC={Rinit}
+Bx 0 x I='((v(j)>= 1) && (V(x) < Roff)) ? {f3()} : ((((V(j) <= 0.0) && (V(x) > Ron)) ? {f4()} : 0))'
+Rm ts tr r={v(x)}
+.func Vm()={V(ts,tr)}
+.func f1()={alfa1*exp(alfa2*(Voff-Vm()))*exp(alfa3*Ron)}  
+.func f2()={-beta1*exp(beta2*(Vm()-Von))*exp(-beta3*Roff)}  
+.func f3()={(1/(exp(V(x)-Kp*Roff)**2+1))*gm_ab+(1/(exp(Kp*Roff-V(x))**2+1))*gm_gd*((Roff-V(x))/Roff)}
+.func f4()= {-gm_ab*((V(x)-Ron)/Roff)} 
+
+.ends
+
+.subckt memristor_0 tr ts PARAMS: Ron=10k Roff=1MEG Rinit=1MEG Von=1.4 Voff=-2.4 alfa1=3.7e6 alfa2=3 alfa3=1.4e-4 beta1=7.5e8 beta2=2 beta3=4e-6 gm_ab=2e17 gm_gd=2e15 Kp=0.5 
+
+Cj j 0 1 IC={Rinit >= Roff ? 1 : 0 }
+Bj 0 j I='((Vm()< Voff) && (V(j) < 1)) ? {f1()} : ((((Vm() > Von) && (V(j) > 0)) ? {f2()} : 0))'
+Cx x 0 1 IC={Rinit}
+Bx 0 x I='((v(j)>= 1) && (V(x) < Roff)) ? {u1()} : ((((V(j) <= 0.0) && (V(x) > Ron)) ? {u2()} : 0))'
+Rm ts tr r={v(x)}
+.func Vm()={V(ts,tr)}
+.func f1()={alfa1*exp(alfa2*(Voff-Vm()))*exp(alfa3*Ron)}  
+.func f2()={-beta1*exp(beta2*(Vm()-Von))*exp(-beta3*Roff)}  
+.func u1()={(1/(exp(V(x)-Kp*Roff)**2+1))*gm_ab+(1/(exp(Kp*Roff-V(x))**2+1))*gm_gd*((Roff-V(x))/Roff)}
+.func u2()= {-gm_ab*((V(x)-Ron)/Roff)} 
+
+.ends
+
+*************************************************************
+*		      Configuração da Simulação                     *
+*************************************************************  
+
+.control
+
+run
+tran 0.01n 90n uic
+
+let res_00   =   v(c0,tm00)/(i(Vs00) + 1e-20)
+let res_01   =   v(c1,tm01)/(i(Vs01) + 1e-20)
+let res_02   =   v(c2,tm02)/(i(Vs02) + 1e-20)
+let res_03   =   v(c3,tm03)/(i(Vs03) + 1e-20)
+let res_04   =   v(c4,tm04)/(i(Vs04) + 1e-20)
+let res_05   =   v(c5,tm05)/(i(Vs05) + 1e-20)
+let res_06   =   v(c6,tm06)/(i(Vs06) + 1e-20)
+let res_07   =   v(c7,tm07)/(i(Vs07) + 1e-20)
+
+plot v(status)+4 v(exec_done)
+plot res_07
+
+wrdata	 res07.txt    res_07
+
+
+.endc
+.end
