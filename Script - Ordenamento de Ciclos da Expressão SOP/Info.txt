@@ -1,0 +1,3 @@
+Script Python para otimizar a ordem dos ciclos executados na computação de uma função.
+
+A expressão Booleana deve ser atribuida à string expression na linha 36.
